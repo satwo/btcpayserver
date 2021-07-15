@@ -38,6 +38,7 @@ using NBXplorer;
 using Newtonsoft.Json.Linq;
 using BitpayCreateInvoiceRequest = BTCPayServer.Models.BitpayCreateInvoiceRequest;
 using StoreData = BTCPayServer.Data.StoreData;
+using Microsoft.Extensions.Logging;
 
 namespace BTCPayServer.Controllers
 {
@@ -856,7 +857,9 @@ namespace BTCPayServer.Controllers
             }
             catch (BitpayHttpException ex)
             {
-                ModelState.TryAddModelError(nameof(model.Currency), $"Error: {ex.Message}");
+                //ModelState.TryAddModelError(nameof(model.Currency), $"Error: {ex.Message}");
+                ModelState.TryAddModelError(nameof(model.Currency), "No rates are configured for this currency. Please check your store settings.");
+                Logs.PayServer.LogWarning($"Error: {ex.Message}");
                 return View(model);
             }
         }
